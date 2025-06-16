@@ -1,4 +1,4 @@
-# XDAC | [Homepage](https://www.bllossom.ai/) | [Github](https://github.com/airobotlab/XDAC) | [Colab-tutorial](https://colab.research.google.com/drive/1fBOzUVZ6NRKk_ugeoTbAOokWKqSN47IG?usp=sharing) |
+# XDAC | [Homepage](https://www.bllossom.ai/) | [Github](https://github.com/airobotlab/XDAC) | [Colab-tutorial](https://colab.research.google.com/drive/1n-JjAhUFIIFNYuBCHqxbdaJyyx93yXpK?usp=sharing) |
 
 Official code, models, and dataset for the paper ["XDAC is an XAI-driven framework for detecting and attributing LLM-generated comments in Korean news"](https://arxiv.org/abs/2411.04822), Association for Computational Linguistics (ACL 2025).
 
