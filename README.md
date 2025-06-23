@@ -7,84 +7,102 @@ Large language models (LLMs) generate human-like text, raising concerns about th
 
 
 ## Download Links for Dataset & Models
-- [Dataset](https://huggingface.co/microsoft/bitnet-b1.58-2B-4T)
-- [LGC Detection Weight](https://huggingface.co/datasets/openai/mrcr)
-- [LGC Attribution Weight](https://huggingface.co/datasets/openai/mrcr)
-
-## Example code
+- [Dataset&Code](https://huggingface.co/keepsteady/XDAC)
 
 ### Colab Tutorial
- - [Inference-Code-Link](https://colab.research.google.com/drive/1fBOzUVZ6NRKk_ugeoTbAOokWKqSN47IG?usp=sharing)
+ - [Inference-Code-Link](https://colab.research.google.com/drive/1n-JjAhUFIIFNYuBCHqxbdaJyyx93yXpK?usp=sharing)
 
 ### Install Dependencies
 ```bash
-pip install torch transformers==4.40.0 accelerate
+pip install torch transformers captum
 ```
 
 ### Python code with Pipeline
 ```python
-import transformers
-import torch
+## 0) download XDAC model/data from huggingface (90s)
+import os
 
-model_id = "MLP-KTLim/llama3-Bllossom"
+XDAC_root_path = './XDAC'
 
-pipeline = transformers.pipeline(
-    "text-generation",
-    model=model_id,
-    model_kwargs={"torch_dtype": torch.bfloat16},
-    device_map="auto",
+from huggingface_hub import snapshot_download
+snapshot_download(
+    repo_id="keepsteady/XDAC",
+    local_dir=XDAC_root_path,
+    local_dir_use_symlinks=False
 )
 
-pipeline.model.eval()
 
-PROMPT = '''당신은 유용한 AI 어시스턴트입니다. 사용자의 질의에 대해 친절하고 정확하게 답변해야 합니다.
-You are a helpful AI assistant, you'll need to answer users' queries in a friendly and accurate manner.'''
-instruction = "서울과학기술대학교 MLP연구실에 대해 소개해줘"
+## 1) Load Korean LGC dataset
+import json
+from datasets import Dataset
+from pprint import pprint
 
-messages = [
-    {"role": "system", "content": f"{PROMPT}"},
-    {"role": "user", "content": f"{instruction}"}
-    ]
+path_data = os.path.join(XDAC_root_path, './LGC_data/LGC_data_v1.0.json')
 
-prompt = pipeline.tokenizer.apply_chat_template(
-        messages, 
-        tokenize=False, 
-        add_generation_prompt=True
+with open(path_data, 'r', encoding='utf-8') as f:
+  data_list = json.load(f)
+  dataset_LGC = Dataset.from_list(data_list)
+
+print(dataset_LGC)
+pprint(dataset_LGC[-1])
+
+
+## 2) Load XDAC
+from XDAC.XDAC_Unified import AIUnifiedEngine
+
+print("XDAC Unified Engine: AI Detection & Attribution")
+print("=" * 60)
+
+device = 'cuda'
+# device = 'cpu'
+
+# Initialize unified engine
+unified_engine = AIUnifiedEngine(
+    detection_model_path=os.path.join(XDAC_root_path, 'XDAC-D'),    # Path to XDAC-D model
+    attribution_model_path=os.path.join(XDAC_root_path, 'XDAC-A'),  # Path to XDAC-A model
+    device=device,                      # or 'cpu', or None for auto-detection
+    xai_enabled=True                    # Enable XAI analysis
 )
 
-terminators = [
-    pipeline.tokenizer.eos_token_id,
-    pipeline.tokenizer.convert_tokens_to_ids("<|eot_id|>")
+
+
+## 3) Run XDAC
+multiple_texts = [
+  '서울대도 옮기고 싶냐? 대체 어디까지 욕심 부릴 거냐?',
+  '17조 수출에 12조 지원이라니! 🤔 거의 뭐 퍼주는 수준 아닌가?! 그래도 국뽕 차오르네 🤣',
+  '세종 투기꾼들 또 설레발 치는 거 아냐? 진짜 짜증난다.',
+  '이런 공약으로 표 얻으려는 게 너무 뻔히 보인다.',
+  '김 전 XX관의 사퇴는 옳은 결정이었어요. 자녀의 학교폭력 문제에 대한 진상이 조만간 밝혀지길 바라요.',
+  '똑바로 좀 해라 똑바로 어??   잘 해봐 좀!!!',
+  '염병 ㅋㅋㅋㅋzzzzzzz   놀고 앉았네',
+  '이게 참말로 말이됀다구? 이거 조작 아냐???',
+  '빠람빠빠밤 빠라빠라빰 빠라라라라~~~',
+  '와나 \n\n\n진짜 어이털리네???? 이거 조작 아냐??',
 ]
 
-outputs = pipeline(
-    prompt,
-    max_new_tokens=2048,
-    eos_token_id=terminators,
-    do_sample=True,
-    temperature=0.6,
-    top_p=0.9,
-    repetition_penalty = 1.1
-)
+# Unified inference
+results = unified_engine.predict(multiple_texts, batch_size=10)
+unified_engine.print_results(results, save_path='result_XDAC.txt')
+unified_engine.save_xai_results_to_html(results, html_file_path='result_XDAC.html')
 
-print(outputs[0]["generated_text"][len(prompt):])
-
-# 서울과학기술대학교 MLP연구실은 멀티모달 자연어처리 연구를 하고 있습니다. 구성원은 임경태 교수와 김민준, 김상민, 최창수, 원인호, 유한결, 임현석, 송승우, 육정훈, 신동재 학생이 있습니다.
+# Get top predictions for detailed analysis
+top_results = unified_engine.get_top_predictions(results, top_k=3)
 ```
 
 ## Citation
 
 ```bibtex
-@proceedings{acl-2024-long,
-    title = "Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
-    editor = "Ku, Lun-Wei  and
-      Martins, Andre  and
-      Srikumar, Vivek",
-    month = aug,
-    year = "2024",
-    address = "Bangkok, Thailand",
+@proceedings{acl-2025-long,
+    title = "Proceedings of the 63nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    editor = "Wooyoung Go and
+      Hyoungshick Kim and
+      Alice Oh and
+      Yongdae Kim",
+    month = July,
+    year = "2025",
+    address = "Vienna, Austria",
     publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2024.acl-long.0/"
+    url = "https://aclanthology.org/2025.acl-long.0/"
 }
 ```
 
