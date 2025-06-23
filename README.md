@@ -7,7 +7,8 @@ Large language models (LLMs) generate human-like text, raising concerns about th
 
 
 ## Download Links for Dataset & Models
-- [Dataset&Code](https://huggingface.co/keepsteady/XDAC)
+- [Dataset & Code (Hugging Face)](https://huggingface.co/keepsteady/XDAC)
+- The dataset consists of LLM-generated comments, and all user information is anonymized by replacing identifiable details with “XXX” to protect individual privacy.
 
 ### Colab Tutorial
  - [Inference-Code-Link](https://colab.research.google.com/drive/1n-JjAhUFIIFNYuBCHqxbdaJyyx93yXpK?usp=sharing)
@@ -21,9 +22,7 @@ pip install torch transformers captum
 ```python
 ## 0) download XDAC model/data from huggingface (90s)
 import os
-
 XDAC_root_path = './XDAC'
-
 from huggingface_hub import snapshot_download
 snapshot_download(
     repo_id="keepsteady/XDAC",
@@ -90,8 +89,7 @@ top_results = unified_engine.get_top_predictions(results, top_k=3)
 ```
 
 ## Citation
-
-```bibtex
+```bibtex: This entry will be updated once the official BibTeX is released.
 @proceedings{acl-2025-long,
     title = "Proceedings of the 63nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
     editor = "Wooyoung Go and
