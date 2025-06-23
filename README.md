@@ -89,7 +89,8 @@ top_results = unified_engine.get_top_predictions(results, top_k=3)
 ```
 
 ## Citation
-```bibtex: This entry will be updated once the official BibTeX is released.
+- This part will be updated once the official BibTeX is released.
+```bibtex
 @proceedings{acl-2025-long,
     title = "Proceedings of the 63nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
     editor = "Wooyoung Go and
