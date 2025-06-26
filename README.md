@@ -1,4 +1,4 @@
-# XDAC | [Homepage](https://airobotlab.github.io/XDAC/) | [Github](https://github.com/airobotlab/XDAC) | [Dataset & Code](https://huggingface.co/keepsteady/XDAC) | [Colab-tutorial](https://colab.research.google.com/drive/1n-JjAhUFIIFNYuBCHqxbdaJyyx93yXpK?usp=sharing) |
+# XDAC | [Homepage](https://airobotlab.github.io/XDAC/) | [Github](https://github.com/airobotlab/XDAC) | [Dataset & Code](https://huggingface.co/keepsteady/XDAC_obs) | [Colab-tutorial](https://colab.research.google.com/drive/1qMCv5SDEc7zshg4m2xyT91FQFDlJtvb8?usp=sharing) |
 
 Official code, models, and dataset for the paper ["XDAC is an XAI-driven framework for detecting and attributing LLM-generated comments in Korean news"](https://github.com/airobotlab/XDAC/blob/main/paper/250611_XDAC_ACL2025_camera_ready.pdf), [Association for Computational Linguistics (ACL 2025) main conference](https://2025.aclweb.org/).
 
@@ -7,11 +7,11 @@ Large language models (LLMs) generate human-like text, raising concerns about th
 
 
 ## Download Links for Dataset & Models
-- [Dataset & Code (Hugging Face)](https://huggingface.co/keepsteady/XDAC)
+- [Dataset & Code (Hugging Face)](https://huggingface.co/keepsteady/XDAC_obs)
 - The dataset consists of LLM-generated comments, and all user information is anonymized by replacing identifiable details with “XXX” to protect individual privacy.
 
 ### Colab Tutorial
- - [Inference-Code-Link](https://colab.research.google.com/drive/1n-JjAhUFIIFNYuBCHqxbdaJyyx93yXpK?usp=sharing)
+ - [Inference-Code-Link](https://colab.research.google.com/drive/1qMCv5SDEc7zshg4m2xyT91FQFDlJtvb8?usp=sharing)
 
 ### Install Dependencies
 ```bash
@@ -22,13 +22,16 @@ pip install torch transformers captum
 ```python
 ## 0) download XDAC model/data from huggingface (90s)
 import os
-XDAC_root_path = './XDAC'
+XDAC_root_path = './XDAC_obs'
 from huggingface_hub import snapshot_download
 snapshot_download(
-    repo_id="keepsteady/XDAC",
+    repo_id="keepsteady/XDAC_obs",
     local_dir=XDAC_root_path,
     local_dir_use_symlinks=False
 )
+from XDAC_obs.xdac_encrypted import AIUnifiedEngine, get_xdac_path
+print("✅ Secure XDAC imported successfully!")
+XDAC_root_path = get_xdac_path()
 
 
 ## 1) Load Korean LGC dataset
@@ -39,28 +42,24 @@ from pprint import pprint
 path_data = os.path.join(XDAC_root_path, './LGC_data/LGC_data_v1.0.json')
 
 with open(path_data, 'r', encoding='utf-8') as f:
-  data_list = json.load(f)
-  dataset_LGC = Dataset.from_list(data_list)
+    data_list = json.load(f)
+    dataset_LGC = Dataset.from_list(data_list)
 
 print(dataset_LGC)
 pprint(dataset_LGC[-1])
 
 
 ## 2) Load XDAC
-from XDAC.XDAC_Unified import AIUnifiedEngine
-
 print("XDAC Unified Engine: AI Detection & Attribution")
 print("=" * 60)
 
 device = 'cuda'
-# device = 'cpu'
 
-# Initialize unified engine
 unified_engine = AIUnifiedEngine(
-    detection_model_path=os.path.join(XDAC_root_path, 'XDAC-D'),    # Path to XDAC-D model
-    attribution_model_path=os.path.join(XDAC_root_path, 'XDAC-A'),  # Path to XDAC-A model
-    device=device,                      # or 'cpu', or None for auto-detection
-    xai_enabled=True                    # Enable XAI analysis
+    detection_model_path=os.path.join(XDAC_root_path, 'XDAC-D'),
+    attribution_model_path=os.path.join(XDAC_root_path, 'XDAC-A'),
+    device=device,
+    xai_enabled=True
 )
 
 
