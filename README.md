@@ -9,6 +9,12 @@ Large language models (LLMs) generate human-like text, raising concerns about th
 ## Download Links for Dataset & Models
 - [Dataset & Code (Hugging Face)](https://huggingface.co/keepsteady/XDAC_obs)
 - The dataset consists of LLM-generated comments, and all user information is anonymized by replacing identifiable details with “XXX” to protect individual privacy.
+- Note: Access to the dataset and models is protected via Hugging Face's gated access system.
+ - To download the resources, users must:
+  - Log in to their Hugging Face account
+  - Request access by providing their email and username
+
+
 
 ### Colab Tutorial
  - [Inference-Code-Link](https://colab.research.google.com/drive/1qMCv5SDEc7zshg4m2xyT91FQFDlJtvb8?usp=sharing)
