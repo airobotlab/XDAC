@@ -1,6 +1,6 @@
 # XDAC | [Homepage](https://airobotlab.github.io/XDAC/) | [Github](https://github.com/airobotlab/XDAC) | [Dataset & Code](https://huggingface.co/keepsteady/XDAC_obs) | [Colab-tutorial](https://colab.research.google.com/drive/1qMCv5SDEc7zshg4m2xyT91FQFDlJtvb8?usp=sharing) |
 
-Official code, models, and dataset for the paper ["XDAC is an XAI-driven framework for detecting and attributing LLM-generated comments in Korean news"](https://github.com/airobotlab/XDAC/blob/main/paper/250611_XDAC_ACL2025_camera_ready.pdf), [Association for Computational Linguistics (ACL 2025) main conference](https://2025.aclweb.org/).
+Official code, models, and dataset for the paper ["XDAC is an XAI-driven framework for detecting and attributing LLM-generated comments in Korean news"](https://aclanthology.org/2025.acl-long.1108.pdf), [Association for Computational Linguistics (ACL 2025) main conference](https://2025.aclweb.org/).
 
 ## Abstract
 Large language models (LLMs) generate human-like text, raising concerns about their misuse in creating deceptive content. Detecting LLM-generated comments (LGC) in online news is essential for preserving online discourse integrity and preventing opinion manipulation. However, effective detection faces two key challenges; the brevity and informality of news comments limit traditional methods, and the absence of a publicly available LGC dataset hinders model training, especially for languages other than English. To address these challenges, we propose a twofold approach. First, we develop an LGC generation framework to construct a high-quality dataset with diverse and complex examples. Second, we introduce XDAC (**X**AI-Driven **D**etection and **A**ttribution of LLM-Generated **C**omments), a framework utilizing explainable AI, designed for the detection and attribution of short-form LGC in Korean news articles. XDAC leverages XAI to uncover distinguishing linguistic patterns at both token and character levels. We present the first large-scale benchmark dataset, comprising 1.3M human-written comments from Korean news platforms and 1M LLM-generated comments from 14 distinct models. XDAC outperforms existing methods, achieving a 98.5\% F1 score in LGC detection with a relative improvement of 68.1\%, and an 84.3\% F1 score in attribution.
@@ -93,17 +93,20 @@ top_results = unified_engine.get_top_predictions(results, top_k=3)
 ## Citation
 - This part will be updated once the official BibTeX is released.
 ```bibtex
-@proceedings{acl-2025-long,
-    title = "Proceedings of the 63nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
-    editor = "Wooyoung Go and
-      Hyoungshick Kim and
-      Alice Oh and
-      Yongdae Kim",
-    month = July,
+@inproceedings{go-etal-2025-xdac,
+    title = "{XDAC}: {XAI}-Driven Detection and Attribution of {LLM}-Generated News Comments in {K}orean",
+    author = "Go, Wooyoung  and
+      Kim, Hyoungshick  and
+      Oh, Alice  and
+      Kim, Yongdae",
+    booktitle = "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
     year = "2025",
     address = "Vienna, Austria",
     publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2025.acl-long.0/"
+    url = "https://aclanthology.org/2025.acl-long.1108/",
+    pages = "22728--22750",
+    ISBN = "979-8-89176-251-0"
 }
 ```
 
